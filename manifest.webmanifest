@@ -1,0 +1,32 @@
+{
+  "name": "Centrage PSA",
+  "short_name": "Centrage PSA",
+  "lang": "fr",
+  "description": "Mesure le centrage d'une carte depuis une photo et le compare aux seuils PSA.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#EBEEF2",
+  "theme_color": "#12202B",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Centrage PSA</title>
+<meta name="description" content="Mesure le centrage d'une carte depuis une photo et le compare aux seuils PSA.">
+<meta name="theme-color" content="#EBEEF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0E1419" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Centrage PSA">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header>
+    <p class="eyebrow">Grille de centrage PSA · carte 63 × 88 mm</p>
+    <h1>Centrage PSA</h1>
+    <p class="lede">Charge la photo d'une carte, cale les huit lignes sur ses bords, et lis les ratios gauche/droite et haut/bas face aux seuils de PSA.</p>
+  </header>
+
+  <main class="bench">
+    <section class="col" aria-label="Photo et lignes de mesure">
+      <div class="tabs" id="tabs">
+        <button class="tab" type="button" data-face="front" aria-pressed="true"><span class="dot"></span>Recto <span class="v"></span></button>
+        <button class="tab" type="button" data-face="back" aria-pressed="false"><span class="dot"></span>Verso <span class="v"></span></button>
+      </div>
+
+      <div class="sample-note" id="sampleNote">
+        <p>Exemple avec une carte fictive. Charge ta photo pour mesurer la tienne.</p>
+        <button class="btn primary" type="button" id="samplePick">Charger ma photo</button>
+      </div>
+
+      <div class="stage" id="stage">
+        <div class="wrap" id="wrap">
+          <canvas id="view" tabindex="0" aria-label="Photo de la carte avec les lignes de mesure déplaçables"></canvas>
+          <canvas id="loupe" hidden></canvas>
+        </div>
+        <div class="drop" id="drop" hidden>
+          <svg viewBox="0 0 63 88" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <rect x="3" y="3" width="57" height="82" rx="5"/>
+            <rect x="9" y="10" width="45" height="52" rx="1.5"/>
+            <path d="M14 72h22M14 78h14" stroke-linecap="round"/>
+          </svg>
+          <h2 id="dropTitle">Ajoute la photo du recto</h2>
+          <p>Glisse-la ici, colle-la depuis le presse-papiers ou choisis un fichier.</p>
+          <button class="btn primary" type="button" id="pick">Choisir une photo</button>
+        </div>
+      </div>
+      <p class="note" id="note" role="status" hidden></p>
+
+      <div class="controls" id="controls">
+        <button class="btn" type="button" id="swap">Changer de photo</button>
+        <button class="btn" type="button" id="flatten">Aplatir la perspective</button>
+        <button class="btn" type="button" id="unflatten" hidden>Annuler l'aplatissement</button>
+        <button class="btn" type="button" id="reset">Recaler les lignes</button>
+        <div class="rot">
+          <label for="rot">Redresser</label>
+          <input type="range" id="rot" min="-6" max="6" step="0.1" value="0">
+          <output for="rot" id="rotOut">0,0°</output>
+        </div>
+      </div>
+      <div class="cornerbar" id="cornerbar" hidden>
+        <p><strong>Place deux points sur chaque bord de la carte</strong> (Haut, Droite, Bas, Gauche), sur la partie bien droite, loin des coins arrondis. Les coins sont calculés là où les bords se croisent. « Aimanter aux bords » recale les points sur le contour le plus net.</p>
+        <div class="row">
+          <button class="btn primary" type="button" id="applyFlat">Aplatir</button>
+          <button class="btn" type="button" id="snapEdges">Aimanter aux bords</button>
+          <button class="btn" type="button" id="cancelFlat">Annuler</button>
+        </div>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+
+      <ul class="legend">
+        <li><span class="sw" style="background:#22D3EE"></span>Bord de la carte</li>
+        <li><span class="sw" style="background:#FF3DA5"></span>Cadre intérieur</li>
+      </ul>
+
+      <div class="how">
+        <h2>Pour une mesure fiable</h2>
+        <ol>
+          <li>Photographie la carte <strong>bien à plat, de face</strong>, sur un fond uni qui contraste avec ses bords.</li>
+          <li>Si la carte est prise en biais, comme sur une photo d'annonce, clique sur <strong>Aplatir la perspective</strong> et place deux points sur chacun des quatre bords, loin des coins arrondis : l'outil calcule les coins à leur intersection et recalcule l'image à plat au format 63 × 88. Le curseur <strong>Redresser</strong> sert aux petits écarts d'angle.</li>
+          <li>Place les lignes cyan sur les quatre bords de la carte, puis les roses sur le cadre intérieur : le cadre de l'illustration au recto, la bordure du dessin au verso.</li>
+          <li>Pendant que tu déplaces une ligne, la loupe montre le détail. Une ligne saisie se règle ensuite avec les flèches du clavier, d'un pixel (Maj pour cinq).</li>
+        </ol>
+      </div>
+    </section>
+
+    <aside class="readout" id="readout" aria-live="polite"></aside>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
